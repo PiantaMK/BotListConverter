@@ -18,11 +18,9 @@ def main(list = args.list, output = args.output):
     response = requests.get(url)
     if response.status_code == 200:
         if list == "bot":
-            ids = parser.parse_bot_list(response.text)
+            ids = parser.parse_rijin_list(response.text)
         elif list == "pazer":
             ids = parser.parse_pazer_list(response.text)
-        elif list == "rijin":
-            ids = parser.parse_rijin_list(response.text)
         else:
             ids = response.text.splitlines()
         formatted = format.format_ncc_list(ids)

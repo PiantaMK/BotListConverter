@@ -1,11 +1,10 @@
 import re
 
 LISTS = {
-    "bot" : "https://raw.githubusercontent.com/d3fc0n6/BotList/master/list", # Needs to be converted to 64 IDs
+    "bot" : "https://api.bots.tf/rawtext", # Needs to be converted to 64 IDs and cleaned up
     "cheater" : "https://raw.githubusercontent.com/d3fc0n6/CheaterList/main/CheaterFriend/64ids",
     "tacobot" : "https://raw.githubusercontent.com/d3fc0n6/TacobotList/master/64ids",
     "pazer" : "https://raw.githubusercontent.com/d3fc0n6/PazerList/master/list.cfg", # Needs to be converted to 64 IDs and cleaned up
-    "rijin" : "https://api.bots.tf/rawtext" # Needs to be converted to 64 IDs and cleaned up
 }
 
 ID64_MAGIC_NUMBER = 76561197960265728

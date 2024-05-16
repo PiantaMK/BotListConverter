@@ -1,5 +1,5 @@
 # PazerListNCC
-Script that converts almost all of [d3fc0n6's](https://github.com/d3fc0n6/) player lists into valid Nullcore player lists.
+Script that converts almost all of [d3fc0n6's](https://github.com/d3fc0n6/) player lists (and some others like RijiN's bot list) into valid Nullcore player lists.
 
 ---
 
