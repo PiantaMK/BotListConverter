@@ -4,7 +4,8 @@ LISTS = {
     "bot" : "https://raw.githubusercontent.com/d3fc0n6/BotList/master/list", # Needs to be converted to 64 IDs
     "cheater" : "https://raw.githubusercontent.com/d3fc0n6/CheaterList/main/CheaterFriend/64ids",
     "tacobot" : "https://raw.githubusercontent.com/d3fc0n6/TacobotList/master/64ids",
-    "pazer" : "https://raw.githubusercontent.com/d3fc0n6/PazerList/master/list.cfg" # Needs to be converted to 64 IDs and cleaned up
+    "pazer" : "https://raw.githubusercontent.com/d3fc0n6/PazerList/master/list.cfg", # Needs to be converted to 64 IDs and cleaned up
+    "rijin" : "https://api.bots.tf/rawtext" # Needs to be converted to 64 IDs and cleaned up
 }
 
 ID64_MAGIC_NUMBER = 76561197960265728
@@ -19,6 +20,13 @@ def parse_bot_list(list: str) -> str:
     ids = []
     for i in list:
         ids.append(to_64(int(i)))
+    return ids
+
+def parse_rijin_list(list: str) -> str:
+    list = list.splitlines()
+    ids = []
+    for i in list:
+        ids.append(to_64(int(i[5:-1]))) # [U:X:YYYYY] -> YYYYY
     return ids
 
 def parse_pazer_list(list: str) -> str:

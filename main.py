@@ -9,7 +9,7 @@ Example:
 """
 
 argparser = argparse.ArgumentParser(description="A tool to convert d3fc0n6's lists to valid NCC playerlists.", epilog=argparse_example)
-argparser.add_argument("-l", "--list", help="The list to convert.", choices=["bot", "cheater", "tacobot", "pazer"], required=True)
+argparser.add_argument("-l", "--list", help="The list to convert.", choices=["bot", "cheater", "tacobot", "pazer", "rijin"], required=True)
 argparser.add_argument("-o", "--output", help="The output file.", default="output.txt")
 args = argparser.parse_args()
 
@@ -21,6 +21,8 @@ def main(list = args.list, output = args.output):
             ids = parser.parse_bot_list(response.text)
         elif list == "pazer":
             ids = parser.parse_pazer_list(response.text)
+        elif list == "rijin":
+            ids = parser.parse_rijin_list(response.text)
         else:
             ids = response.text.splitlines()
         formatted = format.format_ncc_list(ids)
