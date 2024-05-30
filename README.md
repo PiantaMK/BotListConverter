@@ -1,5 +1,5 @@
-# PazerListNCC
-Script that converts almost all of [d3fc0n6's](https://github.com/d3fc0n6/) player lists (and some others like RijiN's bot list) into valid Nullcore player lists.
+# BotListConverter 
+Script that converts BotLists (mostly [d3fc0n6's](https://github.com/d3fc0n6/) and some others like RijiN's bot list) into a valid playerlist of a chosen format.
 
 ---
 
@@ -13,9 +13,9 @@ Script that converts almost all of [d3fc0n6's](https://github.com/d3fc0n6/) play
 # Example:
 ### To export a list of bots:
 ```powershell
-python .\main.py -l bot -o .\bot.txt
+python .\main.py -l bot -f ncc -o .\bot.txt
 ```
 ### To export a list of cheaters
 ```powershell
-python .\main.py -l cheater -o .\bot.txt
+python .\main.py -l cheater -f ncc -o .\bot.txt
 ```
