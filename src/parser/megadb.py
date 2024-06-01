@@ -22,7 +22,7 @@ def fetch_mcdb():
         elif data['color']['border'] == "#00ffff":
             legit.append(int(data['id3'][5:-1]) + 76561197960265728)
         else:
-            print(data['color']['border'])
+            print(f"Unknown color encountered: {data['color']['border']}")
             sys.exit()
 
     run_time = int(time.time())
