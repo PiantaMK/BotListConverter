@@ -21,6 +21,15 @@ def format_amalgam_list(list: list, tag: str = "Cheater") -> str:
     formatted_list.append("}")
     return "".join(formatted_list)
 
+def format_amalgam_dict(dict: dict) -> str:
+    formatted_list = ["{\n"]
+    for i, tags in dict.items():
+        formatted_list.append(f"""    "{i}": [
+        {", ".join(f'"{tag}"' for tag in tags)}
+    ]{"," if i != list(dict.keys())[-1] else ""}\n""")
+    formatted_list.append("}")
+    return "".join(formatted_list)
+
 def format_lbox_list(list: list, priority: int) -> str:
     if priority > 10:
         priority = 10
@@ -30,7 +39,6 @@ def format_lbox_list(list: list, priority: int) -> str:
     for i in list:
         ret += f"{dec_to_hex(int(i) - ID64_MAGIC_NUMBER)};{priority};"
     return ret
-
 
 def dec_to_hex(num):
     hex_str = hex(num)[2:]

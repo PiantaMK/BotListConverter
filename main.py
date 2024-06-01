@@ -14,17 +14,16 @@ argparser.add_argument("-f", "--format", help="The output format.", choices=["nc
 argparser.add_argument("-o", "--output", help="The output file.", default="output.txt")
 args = argparser.parse_args()
 
-def save_formatted_list(ids, fmt, output, listname="bot"):
+def save_formatted_list(ids, fmt, output, listname="Bot"):
     if fmt == "ncc":
         formatted = format.format_ncc_list(ids)
     elif fmt == "cathook":
         formatted = format.format_cathook_list(ids)
     elif fmt == "lbox":
-        priority = int(input(f"What priority do you want to assign for the {listname} list? (2-10): "))
+        priority = int(input(f"What priority do you want to assign for the {listname.lower()} list? (2-10): "))
         formatted = format.format_lbox_list(ids, priority)
     elif fmt == "amalgam":
-        tag = input(f"What label do you want to assign to the {listname} list IDs? ")
-        formatted = format.format_amalgam_list(ids, tag)
+        formatted = format.format_amalgam_list(ids, listname)
     else:
         raise ValueError(f"Unknown format: {fmt}")
     
@@ -35,9 +34,19 @@ def save_formatted_list(ids, fmt, output, listname="bot"):
 def main(list=args.list, fmt=args.format, output=args.output):
     if list == "mcdb":
         ids_dict = megadb.fetch_mcdb()
-        for category, ids in ids_dict.items():
-            output_filename = f"{category}_{output}"
-            save_formatted_list(ids, fmt, output_filename, category)
+        if fmt == "amalgam":
+            formatted_dict = {}
+            for category, ids in ids_dict.items():
+                for i in ids:
+                    formatted_dict[int(i) - 76561197960265728] = [category]
+            formatted_list = format.format_amalgam_dict(formatted_dict)
+            with open(output, "w") as f:
+                f.write(formatted_list)
+            print(f"Saved amalgam list to {output}")
+        else:
+            for category, ids in ids_dict.items():
+                output_filename = f"{category}_{output}"
+                save_formatted_list(ids, fmt, output_filename, category)
     else:
         url = parser.LISTS[list]
         response = requests.get(url)
