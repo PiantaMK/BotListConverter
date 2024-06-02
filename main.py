@@ -29,7 +29,7 @@ def save_formatted_list(ids, fmt, output, listname="Bot"):
     
     with open(output, "w") as f:
         f.write("\n".join(formatted) if isinstance(formatted, list) else formatted)
-    print(f"Saved list to {output}")
+    print(f"Saved {listname.lower()} list to {output}")
 
 def main(list=args.list, fmt=args.format, output=args.output):
     if list == "mcdb":
