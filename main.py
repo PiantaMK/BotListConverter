@@ -11,6 +11,7 @@ Example:
 argparser = argparse.ArgumentParser(description="A tool to convert d3fc0n6's lists to valid NCC playerlists.", epilog=argparse_example)
 argparser.add_argument("-l", "--list", help="The list to convert.", choices=["bot", "mcdb", "cheater", "tacobot", "pazer"])
 argparser.add_argument("-f", "--format", help="The output format.", choices=["ncc", "lbox", "cathook", "amalgam"])
+argparser.add_argument("-n", "--namelabel", help="The list name for formats that support label names (e.g Amalgam). Does not affect MCDB.", default="Bot")
 argparser.add_argument("-o", "--output", help="The output file.", default="output.txt")
 args = argparser.parse_args()
 
@@ -29,9 +30,9 @@ def save_formatted_list(ids, fmt, output, listname="Bot"):
     
     with open(output, "w") as f:
         f.write("\n".join(formatted) if isinstance(formatted, list) else formatted)
-    print(f"Saved {listname.lower()} list to {output}")
+    print(f"List saved to {output}")
 
-def main(list=args.list, fmt=args.format, output=args.output):
+def main(list=args.list, fmt=args.format, output=args.output, name=args.namelabel):
     if list == "mcdb":
         ids_dict = megadb.fetch_mcdb()
         if fmt == "amalgam":
@@ -42,7 +43,7 @@ def main(list=args.list, fmt=args.format, output=args.output):
             formatted_list = format.format_amalgam_dict(formatted_dict)
             with open(output, "w") as f:
                 f.write(formatted_list)
-            print(f"Saved amalgam list to {output}")
+            print(f"List saved to {output}")
         else:
             for category, ids in ids_dict.items():
                 output_filename = f"{category}_{output}"
@@ -58,7 +59,7 @@ def main(list=args.list, fmt=args.format, output=args.output):
             else:
                 ids = response.text.splitlines()
 
-            save_formatted_list(ids, fmt, output)
+            save_formatted_list(ids, fmt, output, name)
         else:
             print(f"Error: {response.status_code}")
 

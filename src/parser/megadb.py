@@ -10,16 +10,16 @@ def fetch_mcdb():
     watched = []
     legit = []
 
-    def convert_to_tf2bd_attrib(data):
-        if data['color']['border'] == "#ff3300":
+    def convert_attrib(data):
+        if data['color']['border'] == "#ff3300": # cheaters (red)
             cheaters.append(int(data['id3'][5:-1]) + 76561197960265728)
-        elif data['color']['border'] == "#ffff00":
+        elif data['color']['border'] == "#ffff00": # suspicious (yellow)
             suspicious.append(int(data['id3'][5:-1]) + 76561197960265728)
-        elif data['color']['border'] == "#ffffff":
+        elif data['color']['border'] == "#ffffff": # watched (white)
             watched.append(int(data['id3'][5:-1]) + 76561197960265728)
-        elif data['color']['border'] == "#33ff00":
+        elif data['color']['border'] == "#33ff00": # legit (green)
             legit.append(int(data['id3'][5:-1]) + 76561197960265728)
-        elif data['color']['border'] == "#00ffff":
+        elif data['color']['border'] == "#00ffff": # MSB (cyan)
             legit.append(int(data['id3'][5:-1]) + 76561197960265728)
         else:
             print(f"Unknown color encountered: {data['color']['border']}")
@@ -41,7 +41,7 @@ def fetch_mcdb():
     site_data = chompjs.parse_js_object(site_data_str)
 
     for mark_data in site_data:
-        convert_to_tf2bd_attrib(mark_data)
+        convert_attrib(mark_data)
 
     print(f"Result: {len(cheaters)} Cheaters, {len(suspicious)} Suspicious, {len(watched)} Watched, {len(legit)} Legits.")
     print(f"Fetched {len(cheaters) + len(suspicious) + len(watched) + len(legit)} players (time: {int(time.time()) - run_time}s)")
