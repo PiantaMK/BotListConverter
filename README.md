@@ -1,7 +1,22 @@
 # BotListConverter 
-Script that converts BotLists (mostly [d3fc0n6's](https://github.com/d3fc0n6/) and some others like RijiN's bot list) into a valid playerlist of a chosen format.
+Script that converts some online BotLists into a valid playerlist of a chosen format.
 
 ---
+
+# List of supported programs:
+- Nullcore
+- Lmaobox
+- Amalgam
+- *hook
+
+# List of supported databases:
+- d3fc0n6's:
+    - Bot list
+    - Cheater list
+    - Tacobot list
+    - Pazer list
+- Rijin's [bots.tf](https://bots.tf/) database
+- megascatterbomb's Mega Cheater Database
 
 # How to use:
 1. Make sure python is installed. You can get it at https://www.python.org/downloads/. Make sure you add it to the PATH too, or else it'll be more difficult to use.
@@ -15,7 +30,11 @@ Script that converts BotLists (mostly [d3fc0n6's](https://github.com/d3fc0n6/) a
 ```powershell
 python .\main.py -l bot -f ncc -o .\bot.txt
 ```
-### To export a list of cheaters
+### To export a list of cheaters (amalgam example)
 ```powershell
-python .\main.py -l cheater -f ncc -o .\bot.txt
+python .\main.py -l cheater -f amalgam -n "Cheater" -o .\bot.txt
 ```
+---
+# Credits
+- [Leadscales](https://github.com/leadscales) - for making the [original version](https://github.com/leadscales/PazerListNCC)
+- [Surepy/sleepy](https://github.com/surepy) - for the base for the [MCDB parser](https://github.com/surepy/tf2db-sleepy-list/blob/main/export_megacheaterdb_as_tf2bd.py)
