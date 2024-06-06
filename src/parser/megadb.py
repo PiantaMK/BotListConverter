@@ -2,7 +2,6 @@ import requests
 import chompjs
 import time
 import sys
-from datetime import datetime
 
 def fetch_mcdb():
     cheaters = []
