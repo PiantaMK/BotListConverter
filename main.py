@@ -48,6 +48,7 @@ def main(list=args.list, fmt=args.format, output=args.output, name=args.namelabe
             for category, ids in ids_dict.items():
                 output_filename = f"{category}_{output}"
                 save_formatted_list(ids, fmt, output_filename, category)
+                
     else:
         url = parser.LISTS[list]
         response = requests.get(url)

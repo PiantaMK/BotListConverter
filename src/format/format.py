@@ -12,7 +12,7 @@ def format_ncc_list(list: list) -> list:
 def format_cathook_list(list: list) -> list:
     return [_format_cathook(i) for i in list]
 
-def format_amalgam_list(list: list, tag: str = "Cheater") -> str:
+def format_amalgam_list(list: list, tag: str = "Bot") -> str:
     formatted_list = ["{\n"]
     for i in list:
         formatted_list.append(f"""    "{int(i) - ID64_MAGIC_NUMBER}": [
