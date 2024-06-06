@@ -1,35 +1,5 @@
 ID64_MAGIC_NUMBER = 76561197960265728
 
-def _format_ncc(string: str) -> str:
-    return f"{string} - {string}"
-
-def _format_cathook(string: str) -> str:
-    return f"cat_pl_add_id {int(string) - ID64_MAGIC_NUMBER} RAGE"
-
-def format_ncc_list(list: list) -> list:
-    return [_format_ncc(i) for i in list]
-
-def format_cathook_list(list: list) -> list:
-    return [_format_cathook(i) for i in list]
-
-def format_amalgam_list(list: list, tag: str = "Cheater") -> str:
-    formatted_list = ["{\n"]
-    for i in list:
-        formatted_list.append(f"""    "{int(i) - ID64_MAGIC_NUMBER}": [
-        "{tag}"
-    ]{"," if i != list[-1] else ""}\n""")
-    formatted_list.append("}")
-    return "".join(formatted_list)
-
-def format_amalgam_dict(dict: dict) -> str:
-    formatted_list = ["{\n"]
-    for i, tags in dict.items():
-        formatted_list.append(f"""    "{i}": [
-        {", ".join(f'"{tag}"' for tag in tags)}
-    ]{"," if i != list(dict.keys())[-1] else ""}\n""")
-    formatted_list.append("}")
-    return "".join(formatted_list)
-
 def format_lbox_list(list: list, priority: int) -> str:
     if priority > 10:
         priority = 10
@@ -39,6 +9,16 @@ def format_lbox_list(list: list, priority: int) -> str:
     for i in list:
         ret += f"{dec_to_hex(int(i) - ID64_MAGIC_NUMBER)};{priority};"
     return ret
+
+def _format_lbox_lua(string: str, priority) -> str:
+    return f"playerlist.SetPriority(\"STEAM_1:1:{string}\", {priority});"
+
+def format_lbox_lua(list: list, priority: int) -> str:
+    if priority > 10:
+        priority = 10
+    if priority <= 1:
+        priority = 2
+    return [_format_lbox_lua(int(i) - ID64_MAGIC_NUMBER, priority) for i in list]
 
 def dec_to_hex(num):
     hex_str = hex(num)[2:]
