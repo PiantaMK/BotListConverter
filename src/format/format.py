@@ -11,7 +11,7 @@ def format_lbox_list(list: list, priority: int) -> str:
     return ret
 
 def _format_lbox_lua(string: str, priority) -> str:
-    return f"playerlist.SetPriority(\"STEAM_1:1:{string}\", {priority});"
+    return f"playerlist.SetPriority(\"STEAM_1:1:{string}\", {priority})"
 
 def format_lbox_lua(list: list, priority: int) -> str:
     if priority > 10:

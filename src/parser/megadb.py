@@ -42,8 +42,10 @@ def fetch_mcdb():
     for mark_data in site_data:
         convert_attrib(mark_data)
 
+    print("########## MEGA CHEATER DATABASE REPORT ##########")
     print(f"Result: {len(cheaters)} Cheaters, {len(suspicious)} Suspicious, {len(watched)} Watched, {len(legit)} Legits.")
-    print(f"Fetched {len(cheaters) + len(suspicious) + len(watched) + len(legit)} players (time: {int(time.time()) - run_time}s)")
+    print(f"Fetched {len(cheaters) + len(suspicious) + len(watched) + len(legit)} players in {int(time.time()) - run_time} sec.")
+    print("##################################################\n")
 
     return {
         "cheaters": cheaters,

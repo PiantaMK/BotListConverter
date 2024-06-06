@@ -1,5 +1,6 @@
 import requests
 import argparse
+import os
 from src.parser import parser, megadb
 from src.format import format
 
@@ -10,8 +11,7 @@ Example:
 
 argparser = argparse.ArgumentParser(description="A tool to convert d3fc0n6's lists to valid NCC playerlists.", epilog=argparse_example)
 argparser.add_argument("-l", "--list", help="The list to convert.", choices=["bot", "mcdb", "cheater", "tacobot", "pazer"])
-argparser.add_argument("-s", "--savemode", help="The save format.", choices=["playerlist", "lua"])
-argparser.add_argument("-o", "--output", help="The output file.", default="output.txt")
+argparser.add_argument("-f", "--format", help="The save format.", choices=["playerlist", "lua"])
 args = argparser.parse_args()
 
 def saveas_plist(ids_dict, output):
@@ -22,7 +22,8 @@ def saveas_plist(ids_dict, output):
 
     with open(output, "w") as f:
         f.write(formatted)
-    print(f"List saved to {output}")
+    print(f"List saved to {output}.")
+    print("You can import the IDs by pasting the list text in your config file in your local app data folder.")
 
 def saveas_lua(ids_dict, output):
     formatted = []
@@ -32,9 +33,15 @@ def saveas_lua(ids_dict, output):
 
     with open(output, "w") as f:
         f.write("\n".join(formatted))
-    print(f"List saved to {output}")
+    print(f"List saved to {output}.")
+    print("You can import the IDs by putting the lua in your your local app data folder and running it.")
 
-def main(list=args.list, output=args.output, smode=args.savemode):
+def main(list=args.list, smode=args.format):
+    if smode == "playerlist":
+        output = "output.txt"
+    else:
+        output = "output.lua"
+
     if list == "mcdb":
         ids_dict = megadb.fetch_mcdb()
         if smode == "playerlist":
@@ -61,4 +68,5 @@ def main(list=args.list, output=args.output, smode=args.savemode):
             print(f"Error: {response.status_code}")
 
 if __name__ == "__main__":
+    os.system("cls")
     main()
