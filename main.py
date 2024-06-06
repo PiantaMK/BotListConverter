@@ -14,32 +14,33 @@ argparser.add_argument("-s", "--savemode", help="The save format.", choices=["pl
 argparser.add_argument("-o", "--output", help="The output file.", default="output.txt")
 args = argparser.parse_args()
 
-def saveas_plist(ids, output, listname="Bot"):
-    priority = int(input(f"What priority do you want to assign for the{listname.lower()}list? (2-10): "))
-    formatted = format.format_lbox_list(ids, priority)
-    
+def saveas_plist(ids_dict, output):
+    formatted = ""
+    for category, ids in ids_dict.items():
+        priority = int(input(f"What priority do you want to assign for the {category} list? (2-10): "))
+        formatted += format.format_lbox_list(ids, priority) + "\n"
+
     with open(output, "w") as f:
         f.write(formatted)
     print(f"List saved to {output}")
 
-def saveas_lua(ids, output, listname="Bot"):
-    priority = int(input(f"What priority do you want to assign for the{listname.lower()}list? (2-10): "))
-    formatted = format.format_lbox_lua(ids, priority)
-    
+def saveas_lua(ids_dict, output):
+    formatted = []
+    for category, ids in ids_dict.items():
+        priority = int(input(f"What priority do you want to assign for the {category} list? (2-10): "))
+        formatted.extend(format.format_lbox_lua(ids, priority))
+
     with open(output, "w") as f:
         f.write("\n".join(formatted))
     print(f"List saved to {output}")
 
-def main(list=args.list, output=args.output, smode = args.savemode):
+def main(list=args.list, output=args.output, smode=args.savemode):
     if list == "mcdb":
         ids_dict = megadb.fetch_mcdb()
-        for category, ids in ids_dict.items():
-            output_filename = f"{category}_{output}"
-            if smode == "playerlist":
-                saveas_plist(ids, output_filename, f" {category} ")
-            else:
-                saveas_lua(ids, output_filename, f" {category} ")
-                
+        if smode == "playerlist":
+            saveas_plist(ids_dict, output)
+        else:
+            saveas_lua(ids_dict, output)
     else:
         url = parser.LISTS[list]
         response = requests.get(url)
@@ -51,10 +52,11 @@ def main(list=args.list, output=args.output, smode = args.savemode):
             else:
                 ids = response.text.splitlines()
 
+            ids_dict = {list: ids}  # wrap in a dict to reuse save functions
             if smode == "playerlist":
-                saveas_plist(ids, output, " ")
+                saveas_plist(ids_dict, output)
             else:
-                saveas_lua(ids, output, " ")
+                saveas_lua(ids_dict, output)
         else:
             print(f"Error: {response.status_code}")
 
