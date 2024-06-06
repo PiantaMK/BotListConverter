@@ -1,13 +1,7 @@
 # BotListConverter 
-Script that converts some online BotLists into a valid playerlist of a chosen format.
+Script that converts some online BotLists into a valid Lmaobox playerlist/lua.
 
 ---
-
-# List of supported programs:
-- Nullcore
-- Lmaobox
-- Amalgam
-- *hook
 
 # List of supported databases:
 - d3fc0n6's:
@@ -15,7 +9,7 @@ Script that converts some online BotLists into a valid playerlist of a chosen fo
     - Cheater list
     - Tacobot list
     - Pazer list
-- Rijin's [bots.tf](https://bots.tf/) database
+- [bots.tf](https://bots.tf/) database
 - megascatterbomb's Mega Cheater Database
 
 # How to use:
@@ -26,15 +20,15 @@ Script that converts some online BotLists into a valid playerlist of a chosen fo
 4. Once you finish using it, import the newly exported playerlist into Nullcore.
 
 # Example:
-### To export a list of bots:
+### To export a list of bots into a lua:
 ```powershell
-python .\main.py -l bot -f ncc -o .\bot.txt
+python .\main.py -l bot -f lua
 ```
-### To export a list of cheaters (amalgam example)
+### To export a list of cheaters into a playerlist
 ```powershell
-python .\main.py -l cheater -f amalgam -n "Cheater" -o .\bot.txt
+python .\main.py -l cheater -f amalgam
 ```
 ---
 # Credits
 - [Leadscales](https://github.com/leadscales) - for making the [original version](https://github.com/leadscales/PazerListNCC)
-- [Surepy/sleepy](https://github.com/surepy) - for the base for the [MCDB parser](https://github.com/surepy/tf2db-sleepy-list/blob/main/export_megacheaterdb_as_tf2bd.py)
+- [Surepy/sleepy](https://github.com/surepy) - for the [base](https://github.com/surepy/tf2db-sleepy-list/blob/main/export_megacheaterdb_as_tf2bd.py) for the [MCDB parser]([https://github.com/surepy/tf2db-sleepy-list/blob/main/export_megacheaterdb_as_tf2bd.py](https://github.com/PiantaMK/BotListConverter/blob/main/src/parser/megadb.py))
