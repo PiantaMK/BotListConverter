@@ -31,4 +31,4 @@ python .\main.py -l cheater -f amalgam
 ---
 # Credits
 - [Leadscales](https://github.com/leadscales) - for making the [original version](https://github.com/leadscales/PazerListNCC)
-- [Surepy/sleepy](https://github.com/surepy) - for the [base](https://github.com/surepy/tf2db-sleepy-list/blob/main/export_megacheaterdb_as_tf2bd.py) for the [MCDB parser]([https://github.com/surepy/tf2db-sleepy-list/blob/main/export_megacheaterdb_as_tf2bd.py](https://github.com/PiantaMK/BotListConverter/blob/main/src/parser/megadb.py))
+- [Surepy/sleepy](https://github.com/surepy) - for the [base](https://github.com/surepy/tf2db-sleepy-list/blob/main/export_megacheaterdb_as_tf2bd.py) for the [MCDB parser](https://github.com/PiantaMK/BotListConverter/blob/main/src/parser/megadb.py)
