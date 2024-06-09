@@ -3,8 +3,8 @@ ID64_MAGIC_NUMBER = 76561197960265728
 def format_lbox_list(list: list, priority: int) -> str:
     if priority > 10:
         priority = 10
-    if priority <= 1:
-        priority = 2
+    if priority <= 0:
+        priority = -1
     ret = ""
     for i in list:
         ret += f"{dec_to_hex(int(i) - ID64_MAGIC_NUMBER)};{priority};"
@@ -16,8 +16,8 @@ def _format_lbox_lua(string: str, priority) -> str:
 def format_lbox_lua(list: list, priority: int) -> str:
     if priority > 10:
         priority = 10
-    if priority <= 1:
-        priority = 2
+    if priority <= 0:
+        priority = -1
     return [_format_lbox_lua(int(i) - ID64_MAGIC_NUMBER, priority) for i in list]
 
 def dec_to_hex(num):
