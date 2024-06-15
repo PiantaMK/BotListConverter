@@ -8,6 +8,7 @@ Script that converts some online BotLists into a valid playerlist of a chosen fo
 - Lmaobox
 - Amalgam
 - *hook
+- TF2BD **(WIP, untested)**
 
 # List of supported databases:
 - d3fc0n6's:
@@ -17,6 +18,7 @@ Script that converts some online BotLists into a valid playerlist of a chosen fo
     - Pazer list
 - Rijin's [bots.tf](https://bots.tf/) database
 - megascatterbomb's Mega Cheater Database
+- Groups of *your* own choice (requires a Steam API key)
 
 # How to use:
 1. Make sure python is installed. You can get it at https://www.python.org/downloads/. Make sure you add it to the PATH too, or else it'll be more difficult to use.
@@ -30,10 +32,26 @@ Script that converts some online BotLists into a valid playerlist of a chosen fo
 ```powershell
 python .\main.py -l bot -f ncc -o .\bot.txt
 ```
-### To export a list of cheaters (amalgam example)
+### To export a list of TF2BD users and name them properly (amalgam example)
 ```powershell
-python .\main.py -l cheater -f amalgam -n "Cheater" -o .\bot.txt
+python .\main.py -l cheater -f amalgam -n "TF2BD User" -o .\pazer.txt
 ```
+---
+# Groups layout explanation
+<details>
+  <summary>How to get the guild IDs</summary>
+
+  ![showcase](https://i.postimg.cc/gkfXrP9c/image.png)
+  
+</details>
+
+This is the layout of the group file (e.g. groups.txt)
+```
+somegroupid
+whatevergroup
+COWHOOKLOVERS
+```
+
 ---
 # Credits
 - [Leadscales](https://github.com/leadscales) - for making the [original version](https://github.com/leadscales/PazerListNCC)

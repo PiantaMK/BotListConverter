@@ -46,8 +46,8 @@ def fetch_mcdb():
     print(f"Fetched {len(cheaters) + len(suspicious) + len(watched) + len(legit)} players (time: {int(time.time()) - run_time}s)")
 
     return {
-        "cheaters": cheaters,
-        "suspicious": suspicious,
-        "watched": watched,
-        "legit": legit
+        "MCDB - Cheaters": cheaters,
+        "MCDB - Suspicious": suspicious,
+        "MCDB - Watched": watched,
+        "MCDB - Legit": legit
     }
