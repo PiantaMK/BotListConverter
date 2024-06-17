@@ -34,7 +34,7 @@ python .\main.py -l bot -f ncc -o .\bot.txt
 ```
 ### To export a list of TF2BD users and name them properly (amalgam example)
 ```powershell
-python .\main.py -l cheater -f amalgam -n "TF2BD User" -o .\pazer.txt
+python .\main.py -l pazer -f amalgam -n "TF2BD User" -o .\pazer.txt
 ```
 ---
 # Groups layout explanation
