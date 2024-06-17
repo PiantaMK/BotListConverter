@@ -1,38 +1,46 @@
 # BotListConverter 
-Script that converts some online BotLists into a valid playerlist of a chosen format.
+Script that converts BotLists into a valid playerlist of a chosen format.
 
 ---
 
 # List of supported programs:
-- Nullcore
-- Lmaobox
-- Amalgam
-- *hook
-- TF2BD **(WIP, untested)**
+- Nullcore (`ncc`)
+- Lmaobox (`lbox`)
+- Amalgam (`amalgam`)
+- *hook (`cathook`)
+- TF2BD **(WIP, untested)** (`tf2bd`)
 
 # List of supported databases:
 - d3fc0n6's:
-    - Bot list
-    - Cheater list
-    - Tacobot list
-    - Pazer list
-- Rijin's [bots.tf](https://bots.tf/) database
-- megascatterbomb's Mega Cheater Database
-- Groups of *your* own choice (requires a Steam API key)
+    - Cheater list (`cheater`)
+    - Tacobot list (`tacobot`)
+    - Pazer list (`pazer`)
+- Rijin's [bots.tf](https://bots.tf/) database (`bot`)
+- megascatterbomb's Mega Cheater Database (`mcdb`)
+- Groups of *your* own choice **(requires a Steam API key)** (`groups`)
 
 # How to use:
 1. Make sure python is installed. You can get it at https://www.python.org/downloads/. Make sure you add it to the PATH too, or else it'll be more difficult to use.
 2. Download the source and open a command prompt or powershell window where you opened it. This can be done in the File Explorer by pressing `File -> Open Windows Powershell`.
 3. Install the requirements. `python -m pip install -r requirements.txt` or double-click the `install_requirements.bat` file.
 3. Run the script in the prompt you just opened. ```python .\main.py --help``` will display information on how to use it.
-4. Once you finish using it, import the newly exported playerlist into Nullcore.
+4. Once you finish using it, import the newly exported playerlist into whatever program you're using.
 
-# Example:
-### To export a list of bots:
+---
+# Launch options
+Parameter | Required | Description
+--------- | -------- | -----------
+`-l` | yes | The list to download.
+`-f` | yes | The output format.
+`-n` | no | The label name for formats that support them (e.g Amalgam). Does not affect MCDB or groups.
+`-o` | no | The output filename.
+
+## Example usage:
+### To export a bot list for Nullcore:
 ```powershell
-python .\main.py -l bot -f ncc -o .\bot.txt
+python .\main.py -l bot -f ncc
 ```
-### To export a list of TF2BD users and name them properly (amalgam example)
+### To export a list of TF2BD users for Amalgam , name them, and choose a filename (amalgam example)
 ```powershell
 python .\main.py -l pazer -f amalgam -n "TF2BD User" -o .\pazer.txt
 ```
