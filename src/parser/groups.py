@@ -21,16 +21,11 @@ def read_config():
     if not config.has_section('Settings'):
         config.add_section('Settings')
     
-    apikey = config.get('Settings', 'STEAM_API_KEY', fallback='')
     group_file = config.get('Settings', 'GROUP_FILE', fallback='groups.txt')
     last_launch = config.getfloat('Settings', 'LAST_LAUNCH', fallback=0)
     
     changes_made = False
     
-    if not apikey:
-        apikey = input("Enter your Steam API key: ")
-        config.set('Settings', 'STEAM_API_KEY', apikey)
-        changes_made = True
     
     if not os.path.isfile(group_file):
         new_group_file = input(f"{group_file} does not exist. Please provide the filename of your groups file (incl. the extension): ")
@@ -38,9 +33,9 @@ def read_config():
         group_file = new_group_file
         changes_made = True
 
-    return apikey, group_file, last_launch, changes_made, config
+    return group_file, last_launch, changes_made, config
 
-def get_group_members(group_name, apikey):
+def get_group_members(group_name):
     group_url = f'https://steamcommunity.com/groups/{group_name}/memberslistxml/?xml=1'
     
     while True:
@@ -60,7 +55,7 @@ def get_group_members(group_name, apikey):
             print(f"Failed to retrieve members for '{group_name}'. HTTP Status Code: {response.status_code}")
             return []
 
-def process_group_file(file_path, apikey):
+def process_group_file(file_path):
     group_members = {}
     try:
         with open(file_path, 'r') as file:
@@ -71,7 +66,7 @@ def process_group_file(file_path, apikey):
         for i, group_name in enumerate(group_names, start=1):
             if group_name:
                 print(f"Parsing group '{group_name}' ({i} out of {total_groups})")
-                member_ids = get_group_members(group_name, apikey)
+                member_ids = get_group_members(group_name)
                 group_members[f"GROUP - {group_name}"] = member_ids
                 if i % 5 == 0 and i != total_groups:  # wait 3 seconds after every 5 groups
                     time.sleep(3)
@@ -95,8 +90,7 @@ def check_cooldown(last_launch):
     return current_time
 
 def get():
-    os.system("cls")
-    apikey, group_file, last_launch, changes_made, config = read_config()
+    group_file, last_launch, changes_made, config = read_config()
     current_time = check_cooldown(last_launch)
 
     config.set('Settings', 'LAST_LAUNCH', str(current_time))
@@ -104,7 +98,7 @@ def get():
         with open(CONFIG_FILE, 'w') as configfile:
             config.write(configfile)
 
-    group_members_dict = process_group_file(group_file, apikey)
+    group_members_dict = process_group_file(group_file)
 
     #print(__dbg_dict_len(group_members_dict))
     

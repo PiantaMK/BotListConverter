@@ -5,7 +5,9 @@ Script that converts BotLists into a valid playerlist of a chosen format.
 
 # List of supported programs:
 - Nullcore (`ncc`)
-- Lmaobox (`lbox`)
+- Lmaobox
+  - Config (`lbox_cfg`)
+  - Lua (`lbox_lua`)
 - Amalgam (`amalgam`)
 - *hook (`cathook`)
 - TF2BD **(WIP, untested)** (`tf2bd`)
@@ -17,7 +19,7 @@ Script that converts BotLists into a valid playerlist of a chosen format.
     - Pazer list (`pazer`)
 - Rijin's [bots.tf](https://bots.tf/) database (`bot`)
 - megascatterbomb's Mega Cheater Database (`mcdb`)
-- Groups of *your* own choice **(requires a Steam API key)** (`groups`)
+- Groups of *your* own choice (`groups`)
 
 # How to use:
 1. Make sure python is installed. You can get it at https://www.python.org/downloads/. Make sure you add it to the PATH too, or else it'll be more difficult to use.
@@ -28,12 +30,10 @@ Script that converts BotLists into a valid playerlist of a chosen format.
 
 ---
 # Launch options
-Parameter | Required | Description
---------- | -------- | -----------
-`-l` | yes | The list to download.
-`-f` | yes | The output format.
-`-n` | no | The label name for formats that support them (e.g Amalgam). Does not affect MCDB or groups.
-`-o` | no | The output filename.
+Parameter | Description
+--------- | -----------
+`-l` | The list to download.
+`-f` | The output format.
 
 ## Example usage:
 ### To export a bot list for Nullcore:
