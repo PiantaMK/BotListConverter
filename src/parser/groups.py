@@ -35,8 +35,11 @@ def read_config():
 
     return group_file, last_launch, changes_made, config
 
-def get_group_members(group_name):
-    group_url = f'https://steamcommunity.com/groups/{group_name}/memberslistxml/?xml=1'
+def get_group_members(group_name, gids=False):
+    if gids:
+        group_url = f'https://steamcommunity.com/gid/{group_name}/memberslistxml/?xml=1'
+    else:
+        group_url = f'https://steamcommunity.com/groups/{group_name}/memberslistxml/?xml=1'
     
     while True:
         response = requests.get(group_url)

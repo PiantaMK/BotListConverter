@@ -20,13 +20,14 @@ Script that converts BotLists into a valid playerlist of a chosen format.
 - Rijin's [bots.tf](https://bots.tf/) database (`bot`)
 - megascatterbomb's Mega Cheater Database (`mcdb`)
 - Groups of *your* own choice (`groups`)
+- Sleepy List RGL bans (`sleepy-rgl`)
 
 # How to use:
 1. Make sure python is installed. You can get it at https://www.python.org/downloads/. Make sure you add it to the PATH too, or else it'll be more difficult to use.
-2. Download the source and open a command prompt or powershell window where you opened it. This can be done in the File Explorer by pressing `File -> Open Windows Powershell`.
+2. Download the source and open a command prompt or powershell window where you opened it. This can be done in the File Explorer by pressing `File -> Open Windows Powershell` or clicking the directory bar, typing `cmd` and pressing Enter.
 3. Install the requirements. `python -m pip install -r requirements.txt` or double-click the `install_requirements.bat` file.
 3. Run the script in the prompt you just opened. ```python .\main.py --help``` will display information on how to use it.
-4. Once you finish using it, import the newly exported playerlist into whatever program you're using.
+4. Once you finish using it, import the newly exported playerlist into whatever training software you're using.
 
 ---
 # Launch options
@@ -34,15 +35,16 @@ Parameter | Description
 --------- | -----------
 `-l` | The list to download.
 `-f` | The output format.
+`-m` | Merge all steam group lists into one.
 
 ## Example usage:
 ### To export a bot list for Nullcore:
 ```powershell
 python .\main.py -l bot -f ncc
 ```
-### To export a list of TF2BD users for Amalgam , name them, and choose a filename (amalgam example)
+### To export a list of TF2BD users for Amalgam and name them:
 ```powershell
-python .\main.py -l pazer -f amalgam -n "TF2BD User" -o .\pazer.txt
+python .\main.py -l pazer -f amalgam -n "TF2BD User" 
 ```
 ---
 # Groups layout explanation

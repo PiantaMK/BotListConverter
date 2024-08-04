@@ -11,20 +11,20 @@ def fetch_mcdb():
 
     def convert_attrib(data):
         if data['color']['border'] == "#ff3300": # cheaters (red)
-            cheaters.append(int(data['id3'][5:-1]) + 76561197960265728)
+            cheaters.append(int(data['id']))
         elif data['color']['border'] == "#ffff00": # suspicious (yellow)
-            suspicious.append(int(data['id3'][5:-1]) + 76561197960265728)
+            suspicious.append(int(data['id']))
         elif data['color']['border'] == "#ffffff": # watched (white)
-            watched.append(int(data['id3'][5:-1]) + 76561197960265728)
+            watched.append(int(data['id']))
         elif data['color']['border'] == "#33ff00": # legit (green)
-            legit.append(int(data['id3'][5:-1]) + 76561197960265728)
+            legit.append(int(data['id']))
         elif data['color']['border'] == "#00ffff": # MSB (cyan)
-            legit.append(int(data['id3'][5:-1]) + 76561197960265728)
+            legit.append(int(data['id']))
         else:
             print(f"Unknown color encountered: {data['color']['border']}")
             sys.exit()
 
-    run_time = int(time.time())
+    run_time = time.time()
     site_data_str = requests.get("https://megascatterbomb.com/mcd").text
 
     data_start_point = "var nodes = new vis.DataSet("
@@ -42,8 +42,7 @@ def fetch_mcdb():
     for mark_data in site_data:
         convert_attrib(mark_data)
 
-    print(f"Result: {len(cheaters)} Cheaters, {len(suspicious)} Suspicious, {len(watched)} Watched, {len(legit)} Legits.")
-    print(f"Fetched {len(cheaters) + len(suspicious) + len(watched) + len(legit)} players (time: {int(time.time()) - run_time}s)")
+    print(f"MCDB Result: {len(cheaters)} Cheaters, {len(suspicious)} Suspicious, {len(watched)} Watched, {len(legit)} Legits, {len(cheaters) + len(suspicious) + len(watched) + len(legit)} Total in {round((time.time()) - run_time, 2)}s.")
 
     return {
         "MCDB - Cheaters": cheaters,

@@ -20,23 +20,15 @@ def format_ncc_list(list: list) -> list:
 def format_cathook_list(list: list) -> list:
     return [_format_cathook(i) for i in list]
 
-def format_amalgam_list(list: list, tag: str = "Bot") -> str:
-    formatted_list = ["{\n"]
-    for i in list:
-        formatted_list.append(f"""    "{int(i) - ID64_MAGIC_NUMBER}": [
-        "{tag}"
-    ]{"," if i != list[-1] else ""}\n""")
-    formatted_list.append("}")
-    return "".join(formatted_list)
-
-def format_amalgam_dict(dict: dict) -> str:
-    formatted_list = ["{\n"]
-    for i, tags in dict.items():
-        formatted_list.append(f"""    "{i}": [
-        {", ".join(f'"{tag}"' for tag in tags)}
-    ]{"," if i != list(dict.keys())[-1] else ""}\n""")
-    formatted_list.append("}")
-    return "".join(formatted_list)
+def format_amalgam(data, tag="Bot"):
+    if isinstance(data, list):
+        adjusted_ids = {str(int(i) - ID64_MAGIC_NUMBER): [tag] for i in data}
+    elif isinstance(data, dict):
+        adjusted_ids = data
+    else:
+        raise ValueError("Input must be a list or dict")
+    formatted_json = json.dumps(adjusted_ids, indent=4)
+    return formatted_json
 
 def format_lbox_list(list: list, priority: int) -> str:
     if priority in [0, 1]:
@@ -53,61 +45,54 @@ def format_lbox_list(list: list, priority: int) -> str:
     return ret
 
 def format_lua_list(ids, priorities, is_dict=False, listname="Error"):
+    def adjust_priority(priority):
+        if priority in [0, 1]:
+            print("WARNING: Invalid priority assigned, changing to 2...")
+            return 2
+        return max(-1, min(10, priority))
 
-    def lua_dict_len(d):
-        total = 0
-        ret = "\n"
-        for key, value in d.items():
-            count = len(value) if hasattr(value, '__len__') else 0
-            ret += f"-- {key} has {count} IDs\n"
-            total += count
-        ret += f"\n-- {total} IDs in total.\n"
-        final = f"\nprint(\"{total} players added.\")"
-        return ret + "\n", final
+    def write_ids(ids, priority):
+        ret = ""
+        for i in ids:
+            ret += f"playerlist.SetPriority(\"{id64_to_id2(int(i))}\",{priority})\n"
+        return ret
+    
+    def dict_len(d):
+        lengths = {k: len(v) for k, v in d.items()}
+        total = sum(lengths.values())
+        lengths["total"] = total
+        return lengths
 
     now = datetime.now()
     header = "--[[ auto-priority script made by Pianta's BotListConverter ]]\n"
     header += f"--[[ generated at {now.strftime('%d-%b-%y %a')} ]]\n"
 
+    ret = header
+    total_ids = 0
+
     if is_dict:
-        for key in priorities:
-            if priorities[key] in [0, 1]:
-                print("WARNING: Invalid priority assigned, changing to 2...")
-                priorities[key] = 2
-            if priorities[key] < -1:
-                priorities[key] = -1
-            if priorities[key] > 10:
-                priorities[key] = 10
+        ret += "\n"
+        ln = dict_len(ids)
+        for cat, count in ln.items():
+            if cat == "total": # skip total count
+                continue
 
-        counts, final = lua_dict_len(ids)
-
-        ret = header + f"\n-- {len(ids)} ID lists in total.\n"
-        ret += counts
+            ret += f"-- {cat} has {count} IDs\n"
+        ret += f"\n-- {ln['total']} IDs in total\n"
         for category, id_list in ids.items():
-            priority = priorities[category]
-            ret += f"-- {category}\n"
-            for i in id_list:
-                ret += f"\n-- {i} (id3 [U:1:{int(i) - ID64_MAGIC_NUMBER}])"
-                ret += f"\nplayerlist.SetPriority(\"{id64_to_id2(int(i))}\", {priority});\n"
+            priority = adjust_priority(priorities[category])
+            ret += f"\n-- {category}\n\n"
+            ret += write_ids(id_list, priority)
             ret += "\n"
-        ret += f"print(\"{len(ids)} categories processed.\")"
-        ret += final
+            total_ids += len(id_list)
+        ret += f"\nprint(\"{len(ids)} categories processed.\")\n"
     else:
-        priority = priorities
-        if priority in [0, 1]:
-            print("WARNING: Invalid priority assigned, changing to 2...")
-            priority = 2
-        if priority < -1:
-            priority = -1
-        if priority > 10:
-            priority = 10
-        ret = header + f"\n-- {len(ids)} players in total.\n"
-        ret += f"\n-- {listname}\n"
-        for i in ids:
-            ret += f"\n-- {i} (id3 [U:1:{int(i) - ID64_MAGIC_NUMBER}])"
-            ret += f"\nplayerlist.SetPriority(\"{id64_to_id2(int(i))}\", {priority});\n"
-        ret += f"\nprint(\"{len(ids)} players added.\")"
+        priority = adjust_priority(priorities)
+        ret += f"\n-- {listname}\n\n"
+        ret += write_ids(ids, priority)
+        total_ids = len(ids)
 
+    ret += f"\nprint(\"{total_ids} players added.\")"
     return ret
 
 def format_tf2bd_list(ids, listname = "Bot", attribute_index = 1, proof = "generated by BotListConverter"):
@@ -139,6 +124,27 @@ def format_tf2bd_list(ids, listname = "Bot", attribute_index = 1, proof = "gener
     return json.dumps(data, indent=4)
 
 ##### UTILS #####
+
+def merge_dict_ids(d, name):
+    merged_list = []
+    for value in d.values():
+        if isinstance(value, list):
+            merged_list.extend(value)
+        else:
+            merged_list.append(value)
+    
+    merged_dict = {name: merged_list}
+    return merged_dict
+
+def merge_dicts(dicts):
+    merged = {}
+    for d in dicts:
+        for key, value in d.items():
+            if key in merged:
+                merged[key].extend(value)
+            else:
+                merged[key] = value
+    return merged
 
 def id64_to_id2(steamid64):
     account_id = steamid64 - ID64_MAGIC_NUMBER
