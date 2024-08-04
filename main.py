@@ -6,7 +6,7 @@ from src.format import format
 
 argparse_example = """
 Example:
-    python main.py -f amalgam -l cheater -n "Cheater"
+    python main.py -f amalgam -l cheater
 """
 
 argparser = argparse.ArgumentParser(

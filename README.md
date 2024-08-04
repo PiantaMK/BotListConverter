@@ -42,9 +42,9 @@ Parameter | Description
 ```powershell
 python .\main.py -l bot -f ncc
 ```
-### To export a list of TF2BD users for Amalgam and name them:
+### To export a list of TF2BD users for Amalgam:
 ```powershell
-python .\main.py -l pazer -f amalgam -n "TF2BD User" 
+python .\main.py -l pazer -f amalgam
 ```
 ---
 # Groups layout explanation
