@@ -4,14 +4,29 @@ import os
 from src.parser import parser, megadb, groups
 from src.format import format
 
-argparse_example = """
-Example:
-    python main.py -f amalgam -l cheater
+argparse_example = \
+"""
+Example: python main.py -f amalgam -l cheater
+
+Note: lbox_cfg and tf2bd are untested and may not work.
+"""
+
+argparse_desc = \
+"""
+BotListConverter - a tool to convert ID lists from various sources to valid playerlists.
+
+
+Made by PiantaMK - Download at github.com/PiantaMK/BotListConverter
+Thanks to:
+- Leadscales - for making the original version of this tool. (https://github.com/leadscales)
+- Surepy/sleepy - for the base of the MCDB parser. (https://github.com/surepy)
+
 """
 
 argparser = argparse.ArgumentParser(
-    description="A tool to convert ID lists from various sources to valid playerlists.", 
-    epilog=argparse_example)
+    description=argparse_desc, 
+    epilog=argparse_example,
+    formatter_class=argparse.RawTextHelpFormatter)
 
 argparser.add_argument(
     "-l", "--list", 
@@ -47,6 +62,20 @@ def get_pretty_name(lst):
         return "Sleepy List - RGL"
     else:
         return lst
+    
+def get_extension(fmt):
+    if fmt == "cathook":
+        return ".cfg"
+    elif fmt == "lbox_lua":
+        return ".lua"
+    elif fmt in ["amalgam", "tf2bd"]:
+        return ".json"
+    elif fmt == "ncc":
+        return ".txt"
+    elif fmt == "lbox_cfg":
+        return ""  # no extension
+    else:
+        raise ValueError(f"Unknown format: {fmt}")
 
 def fetch_and_parse(lst, is_all=False, mergedicts=False):
     if lst == "groups":
@@ -71,25 +100,25 @@ def fetch_and_parse(lst, is_all=False, mergedicts=False):
                 ids = response.text.splitlines()
             return {get_pretty_name(lst): ids} if is_all else ids
         else:
-            print(f"Error fetching {lst}: {response.status_code}")
+            print(f"Error fetching '{get_pretty_name(lst)}': {response.status_code}")
             return {}
 
 def save_list(ids, fmt, output, listname="Bot"):
     ids = format.remove_duplicates_list(ids)
     if fmt == "ncc":
-        formatted = format.format_ncc_list(ids)
+        formatted = format.format_ncc(ids)
     elif fmt == "cathook":
-        formatted = format.format_cathook_list(ids)
+        formatted = format.format_cathook(ids)
     elif fmt == "lbox_cfg":
         priority = int(input(f"What priority do you want to assign for the '{listname}' list? (-1 or 2-10): "))
-        formatted = format.format_lbox_list(ids, priority)
+        formatted = format.format_lbox(ids, priority)
     elif fmt == "lbox_lua":
         priority = int(input(f"What priority do you want to assign for the '{listname}' list? (-1 or 2-10): "))
-        formatted = format.format_lua_list(ids, priority, is_dict=False, listname=listname)
+        formatted = format.format_lua(ids, priority, listname=listname)
     elif fmt == "amalgam":
         formatted = format.format_amalgam(ids, listname)
     elif fmt == "tf2bd":
-        formatted = format.format_tf2bd_list(ids, listname)
+        formatted = format.format_tf2bd(ids, listname)
     else:
         raise ValueError(f"Unknown format: {fmt}")
     
@@ -101,11 +130,7 @@ def save_dict(ids_dict, fmt, output):
     ids_dict = format.remove_duplicates_dict(ids_dict)
 
     if fmt == "amalgam":
-        formatted_dict = {}
-        for category, ids in ids_dict.items():
-            for i in ids:
-                formatted_dict[int(i) - format.ID64_MAGIC_NUMBER] = [category]
-        formatted_list = format.format_amalgam(formatted_dict)
+        formatted_list = format.format_amalgam(ids_dict)
         with open(output, "w") as f:
             f.write(formatted_list)
         print(f"List saved to {output}")
@@ -115,7 +140,7 @@ def save_dict(ids_dict, fmt, output):
         for category in ids_dict:
             priority = int(input(f"What priority do you want to assign for the '{category}' list? (-1 or 2-10): "))
             priority_dict[category] = priority
-        formatted_list = format.format_lua_list(ids_dict, priority_dict, is_dict=True)
+        formatted_list = format.format_lua(ids_dict, priority_dict)
         with open(output, "w") as f:
             f.write(formatted_list)
         print(f"List saved to {output}")     
@@ -124,21 +149,11 @@ def save_dict(ids_dict, fmt, output):
             output_filename = get_output_path(category, fmt, get_extension(fmt))
             save_list(ids, fmt, output_filename, category)
 
-def get_extension(fmt):
-    if fmt == "cathook":
-        return ".cfg"
-    elif fmt == "lbox_lua":
-        return ".lua"
-    elif fmt in ["amalgam", "tf2bd"]:
-        return ".json"
-    elif fmt == "ncc":
-        return ".txt"
-    elif fmt == "lbox_cfg":
-        return ""  # no extension
-    else:
-        raise ValueError(f"Unknown format: {fmt}")
-
 def main(lst=args.list, fmt=args.format, merge=args.merge):
+    if not lst or not fmt:
+        print("Error: Missing arguments.\n")
+        argparser.print_help()
+        return
     ext = get_extension(fmt)
     if lst == "all":
         lists_to_fetch = ["bot", "cheater", "tacobot", "pazer", "mcdb", "groups"]
@@ -155,4 +170,8 @@ def main(lst=args.list, fmt=args.format, merge=args.merge):
             save_list(result, fmt, get_output_path(lst, fmt, ext), get_pretty_name(lst))
 
 if __name__ == "__main__":
+    SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+    os.chdir(SCRIPT_DIR) # to make sure that all imports work
+
+
     main()

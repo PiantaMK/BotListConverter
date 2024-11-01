@@ -3,7 +3,7 @@ Script that converts BotLists into a valid playerlist of a chosen format.
 
 ---
 
-# List of supported programs:
+# List of supported formats:
 - Nullcore (`ncc`)
 - Lmaobox
   - Config (`lbox_cfg`)
@@ -19,7 +19,7 @@ Script that converts BotLists into a valid playerlist of a chosen format.
     - Pazer list (`pazer`)
 - Rijin's [bots.tf](https://bots.tf/) database (`bot`)
 - megascatterbomb's Mega Cheater Database (`mcdb`)
-- Groups of *your* own choice (`groups`)
+- Groups of your own choice (`groups`) (More details below.)
 - Sleepy List RGL bans (`sleepy-rgl`)
 
 # How to use:

@@ -39,8 +39,12 @@ def fetch_mcdb():
 
     site_data = chompjs.parse_js_object(site_data_str)
 
-    for mark_data in site_data:
-        convert_attrib(mark_data)
+    try:
+        for mark_data in site_data:
+            convert_attrib(mark_data)
+    except Exception as e:
+        print(f"Error parsing MCDB: {e}")
+        return {}
 
     print(f"MCDB Result: {len(cheaters)} Cheaters, {len(suspicious)} Suspicious, {len(watched)} Watched, {len(legit)} Legits, {len(cheaters) + len(suspicious) + len(watched) + len(legit)} Total in {round((time.time()) - run_time, 2)}s.")
 

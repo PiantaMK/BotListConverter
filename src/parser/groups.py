@@ -1,10 +1,10 @@
-from bs4 import BeautifulSoup
-import configparser
+import json
 import requests
 import time
 import os
+from bs4 import BeautifulSoup
 
-CONFIG_FILE = 'groups.cfg'
+CONFIG_FILE = 'groups.json'
 PROFILE_URL_BASE = 'https://steamcommunity.com/profiles/'
 
 #def __dbg_dict_len(d):
@@ -13,23 +13,22 @@ PROFILE_URL_BASE = 'https://steamcommunity.com/profiles/'
 #        print(f"{key} has {count} ids")
 
 def read_config():
-    config = configparser.ConfigParser()
     if not os.path.isfile(CONFIG_FILE):
-        open(CONFIG_FILE, "x")
-    config.read(CONFIG_FILE)
+        with open(CONFIG_FILE, "w") as f:
+            json.dump({"settings": {}}, f)
     
-    if not config.has_section('Settings'):
-        config.add_section('Settings')
+    with open(CONFIG_FILE, "r") as f:
+        config = json.load(f)
     
-    group_file = config.get('Settings', 'GROUP_FILE', fallback='groups.txt')
-    last_launch = config.getfloat('Settings', 'LAST_LAUNCH', fallback=0)
+    settings = config.get('settings', {})
+    group_file = settings.get('GROUP_FILE', 'groups.txt')
+    last_launch = settings.get('LAST_LAUNCH', 0)
     
     changes_made = False
     
-    
     if not os.path.isfile(group_file):
         new_group_file = input(f"{group_file} does not exist. Please provide the filename of your groups file (incl. the extension): ")
-        config.set('Settings', 'GROUP_FILE', new_group_file)
+        settings['GROUP_FILE'] = new_group_file
         group_file = new_group_file
         changes_made = True
 
@@ -96,10 +95,10 @@ def get():
     group_file, last_launch, changes_made, config = read_config()
     current_time = check_cooldown(last_launch)
 
-    config.set('Settings', 'LAST_LAUNCH', str(current_time))
+    config['settings']['LAST_LAUNCH'] = current_time
     if changes_made or True:
         with open(CONFIG_FILE, 'w') as configfile:
-            config.write(configfile)
+            json.dump(config, configfile, indent=4)
 
     group_members_dict = process_group_file(group_file)
 
