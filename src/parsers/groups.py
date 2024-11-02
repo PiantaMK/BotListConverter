@@ -5,12 +5,6 @@ import os
 from bs4 import BeautifulSoup
 
 CONFIG_FILE = 'groups.json'
-PROFILE_URL_BASE = 'https://steamcommunity.com/profiles/'
-
-#def __dbg_dict_len(d):
-#    for key, value in d.items():
-#        count = len(value) if hasattr(value, '__len__') else 0
-#        print(f"{key} has {count} ids")
 
 def read_config():
     if not os.path.isfile(CONFIG_FILE):
@@ -101,7 +95,5 @@ def get():
             json.dump(config, configfile, indent=4)
 
     group_members_dict = process_group_file(group_file)
-
-    #print(__dbg_dict_len(group_members_dict))
     
     return group_members_dict

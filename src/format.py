@@ -49,10 +49,7 @@ def format_lua(ids, priorities, listname="Error"):
         return max(-1, min(10, priority))
 
     def write_ids(ids, priority):
-        ret = ""
-        for i in ids:
-            ret += f"playerlist.SetPriority(\"{cvt(i, 'STEAMID2')}\",{priority})\n"
-        return ret
+        return "".join(f'playerlist.SetPriority("{cvt(i, "STEAMID2")}",{priority})\n' for i in ids)
     
     def dict_len(d):
         lengths = {k: len(v) for k, v in d.items()}
@@ -61,7 +58,8 @@ def format_lua(ids, priorities, listname="Error"):
         return lengths
 
     now = datetime.now()
-    header = "--[[ auto-priority script made by Pianta's BotListConverter ]]\n"
+    header =  f"---@diagnostic disable: undefined-global\n"
+    header += f"--[[ auto-priority script made by Pianta's BotListConverter ]]\n"
     header += f"--[[ generated at {now.strftime('%d-%b-%y %a')} ]]\n"
 
     ret = header
@@ -85,7 +83,7 @@ def format_lua(ids, priorities, listname="Error"):
         ret += f"\nprint(\"{len(ids)} categories processed.\")\n"
     else:
         priority = adjust_priority(priorities)
-        ret += f"\n-- {listname}\n\n"
+        ret += f"\n-- {listname} has {len(ids)} IDs and priority {priority}\n\n"
         ret += write_ids(ids, priority)
         total_ids = len(ids)
 
@@ -205,11 +203,10 @@ def dec_to_hex(num):
     hex_str = hex(num)[2:]
     return hex_str
 
-def remove_duplicates_dict(input_dict):
-    output_dict = {}
-    for key, value in input_dict.items():
-        output_dict[key] = list(set(value))
-    return output_dict
-
-def remove_duplicates_list(input_list):
-    return list(set(input_list))
+def remove_duplicates(input_data):
+    if isinstance(input_data, dict):
+        return {key: list(set(value)) for key, value in input_data.items()}
+    elif isinstance(input_data, list):
+        return list(set(input_data))
+    else:
+        raise TypeError("Input must be a dict or list")
