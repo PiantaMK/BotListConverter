@@ -48,20 +48,21 @@ def fetch_mcdb(url="https://megascatterbomb.com/mcd"):
             print(f"Error parsing MCDB: {e}")
             return False
 
-        print(
-            f"MCDB Result: {len(cheaters)} Cheaters,",
-            f"{len(suspicious)} Suspicious,",
-            f"{len(watched)} Watched,",
-            f"{len(legit)} Legits,",
-            f"{len(cheaters) + len(suspicious) + len(watched) + len(legit)} Total",
-            f"in {round((time.time()) - run_time, 2)}s."
-        )
+        print("\n----- MCDB Summary -----")
+        print(f"Cheaters   : {len(cheaters)}")
+        print(f"Suspicious : {len(suspicious)}")
+        print(f"Watched    : {len(watched)}")
+        print(f"Legit      : {len(legit)}")
+        print(f"Total      : {len(cheaters) + len(suspicious) + len(watched) + len(legit)}")
+        print(f"Time Taken : {round(time.time() - run_time, 2)} sec")
+        print("------------------------\n")
         return True
 
     if not getsite(url):
         print("Retrying with fallback URL...")
-        if not getsite(get_latest_archived_url(url)):
-            print("Failed to parse data.")
+        fallback = get_latest_archived_url(url)
+        if not fallback or not getsite(fallback):
+            print("Failed to parse MCDB.")
             return {}
 
     return {

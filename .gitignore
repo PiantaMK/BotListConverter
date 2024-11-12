@@ -159,3 +159,5 @@ cython_debug/
 #.idea/
 
 output
+lists/*
+!lists/example.py

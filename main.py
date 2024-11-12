@@ -1,6 +1,8 @@
-import requests
 import argparse
+import importlib.util
 import os
+import requests
+
 from src.parsers import parser, megadb, groups
 import src.format as format
 
@@ -31,7 +33,7 @@ argparser = argparse.ArgumentParser(
 argparser.add_argument(
     "-l", "--list", 
     help="The list to download.", 
-    choices=["bot", "cheater", "tacobot", "pazer", "mcdb", "groups", "sleepy-rgl", "sleepy-bot", "all"])
+    choices=["bot", "cheater", "tacobot", "pazer", "mcdb", "groups", "sleepy-rgl", "sleepy-bot", "all", "custom"])
 
 argparser.add_argument(
     "-f", "--format", 
@@ -83,7 +85,34 @@ def get_extension(fmt):
     else:
         raise ValueError(f"Unknown format: {fmt}")
 
-def fetch_and_parse(lst, is_all=False, mergedicts=False):
+def dl_list(lst, is_all):
+    url = parser.LISTS[lst]
+    response = requests.get(url)
+    if response.status_code == 200:
+        if lst == "bot":
+            ids = parser.parse_bot_list(response.text)
+        elif lst == "pazer":
+            ids = parser.parse_pazer_list(response.text)
+        elif lst in ["sleepy-rgl", "sleepy-bot"]:
+            ids = parser.parse_tf2bd_list(response.text)
+        else:
+            ids = response.text.splitlines()
+        return {get_pretty_name(lst): ids} if is_all else ids
+    else:
+        print(f"Error fetching '{get_pretty_name(lst)}': {response.status_code}")
+        if lst == "bot":
+            print("Trying fallback URL...")
+            fallback = parser.get_latest_archived_url(parser.LISTS[lst])
+            if fallback:
+                response = requests.get(fallback)
+                if response.status_code == 200:
+                    ids = parser.parse_rijin_list(response.text)
+                    return {get_pretty_name(lst): ids} if is_all else ids
+            else:
+                print(f"Error fetching '{get_pretty_name(lst)}' with fallback URL: {response.status_code}")
+        return {}
+
+def fetch_ids(lst, is_all=False, mergedicts=False):
     if lst == "groups":
         if mergedicts:
             got = format.merge_dict_ids(groups.get(), "GROUPS")
@@ -92,30 +121,47 @@ def fetch_and_parse(lst, is_all=False, mergedicts=False):
         return got
     elif lst == "mcdb":
         return megadb.fetch_mcdb()
-    else: # TODO move this to a separate function
-        url = parser.LISTS[lst]
-        response = requests.get(url)
-        if response.status_code == 200:
-            if lst == "bot":
-                ids = parser.parse_rijin_list(response.text)
-            elif lst == "pazer":
-                ids = parser.parse_pazer_list(response.text)
-            elif lst in ["sleepy-rgl", "sleepy-bot"]:
-                ids = parser.parse_tf2bd_list(response.text)
+    elif lst == "custom":
+        lists_dir = os.path.join(os.path.dirname(__file__), 'lists')
+        db_files = [f for f in os.listdir(lists_dir) if f.endswith('.py')]
+
+        list_modules = []
+        for db_file in db_files:
+            module_name = os.path.splitext(db_file)[0]
+            module_path = os.path.join(lists_dir, db_file)
+            spec = importlib.util.spec_from_file_location(module_name, module_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+
+            name = "Unknown"
+            if hasattr(module, '__ATTR__') and 'name' in module.__ATTR__:
+                c_name = module.__ATTR__['name']
+                list_modules.append((c_name, module))
+
+        if not list_modules:
+            raise ValueError("No valid database module found in 'lists' directory.")
+
+        print("Available databases:")
+        for i, (name, _) in enumerate(list_modules):
+            print(f"{i + 1}. {name}")
+
+        choice = int(input("Select a database by number: ")) - 1
+        if choice < 0 or choice >= len(list_modules):
+            raise ValueError("Invalid selection.")
+
+        selected_module = list_modules[choice][1]
+        if hasattr(selected_module, '__call__'):
+            ids = selected_module.__call__()
+            if isinstance(ids, dict):
+                return ids
+            elif isinstance(ids, list):
+                return {c_name: ids}
             else:
-                ids = response.text.splitlines()
-            return {get_pretty_name(lst): ids} if is_all else ids
+                raise ValueError("Selected module does not return a valid type.\nOnly list and dict are supported.")
         else:
-            print(f"Error fetching '{get_pretty_name(lst)}': {response.status_code}")
-            if lst == "bot":
-                print("Trying fallback URL...")
-                response = requests.get(parser.get_latest_archived_url(parser.LISTS[lst]))
-                if response.status_code == 200:
-                    ids = parser.parse_rijin_list(response.text)
-                    return {get_pretty_name(lst): ids} if is_all else ids
-                else:
-                    print(f"Error fetching '{get_pretty_name(lst)}' with fallback URL: {response.status_code}")
-            return {}
+            raise ValueError("Selected module does not have a callable function.")
+    else:
+        return dl_list(lst, is_all)
 
 def save(ids, fmt, output, listname="Bot"):
     if isinstance(ids, list):
@@ -174,11 +220,11 @@ def main(lst=args.list, fmt=args.format, merge=args.merge):
         combined_dicts = []
         for l in lists_to_fetch:
             print(f"Fetching '{get_pretty_name(l)}'...")
-            combined_dicts.append(fetch_and_parse(l, True, merge))
+            combined_dicts.append(fetch_ids(l, True, merge))
         merged_dict = format.merge_dicts(combined_dicts)
         save(merged_dict, fmt, get_output_path("all", ext))
     else:
-        result = fetch_and_parse(lst, False, merge)
+        result = fetch_ids(lst, False, merge)
         if isinstance(result, dict):
             save(result, fmt, get_output_path(lst, ext))
         else:

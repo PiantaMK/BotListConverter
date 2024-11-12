@@ -14,37 +14,16 @@ LISTS = {
 }
 
 def get_latest_archived_url(url):
-    response = requests.get(f"http://archive.org/wayback/available?url={url}")
-    data = response.json()
+    data = requests.get(f"http://archive.org/wayback/available?url={url}").json()
     if data['archived_snapshots']:
         return data['archived_snapshots']['closest']['url']
     return None
 
 def parse_bot_list(lst: str) -> str:
-    lst = lst.splitlines()
-    ids = []
-    for i in lst:
-        ids.append(cvt(i, "STEAMID64"))
-    return ids
-
-def parse_rijin_list(lst: str) -> str:
-    lst = lst.splitlines()
-    ids = []
-    for i in lst:
-        ids.append(cvt(i, "STEAMID64"))
-    return ids
+    return [cvt(i, "STEAMID64") for i in lst.splitlines()]
 
 def parse_pazer_list(lst: str) -> str:
-    lst = lst.splitlines()
-    ids = []
-    for i in lst:
-        ids.append(cvt(re.compile(r"\d+").search(i).group(0), "STEAMID64"))
-    return ids
+    return [cvt(re.compile(r"\d+").search(i).group(0), "STEAMID64") for i in lst.splitlines()]
 
 def parse_tf2bd_list(lst: str) -> str:
-    lst = json.loads(lst)
-    ids = []
-    for p in lst['players']:
-        sid = p['steamid']
-        ids.append(cvt(sid, "STEAMID64"))
-    return ids
+    return [cvt(p['steamid'], "STEAMID64") for p in json.loads(lst)['players']]

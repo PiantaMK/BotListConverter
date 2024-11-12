@@ -1,8 +1,4 @@
-certifi
-charset-normalizer
-idna
 requests
-urllib3
 chompjs
 bs4
 lxml
