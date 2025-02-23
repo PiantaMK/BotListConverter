@@ -6,7 +6,7 @@ import html
 import signal
 import time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from format import cvt
+from src.utils.format import SteamID
 
 #? sourcebans/++ banlist scraper
 #? supports both old and new sourcebans++ styles
@@ -87,12 +87,12 @@ def parse_pg_sb(pagenum=1):
 
         # this column is only in sourcebans
         if data['_id2-sb'] and data['_id2-sb'].startswith("STEAM_0"):
-            data['id'] = cvt(data['_id2-sb'], "STEAMID64")
+            data['id'] = SteamID(data['_id2-sb']).id64
             del data['_id2-sb']
 
         # this column is only in sourcebans++
         elif data['_id3-sbpp'] and data['_id3-sbpp'].startswith("[U:1:"):
-            data['id'] = cvt(data['_id3-sbpp'], "STEAMID64")
+            data['id'] = SteamID(data['_id3-sbpp']).id64
             del data['_id3-sbpp']
         else:
             data['id'] = None

@@ -19,7 +19,7 @@ Script that converts BotLists into a valid playerlist of a chosen format.
     - Pazer list (`pazer`)
 - Rijin's [bots.tf](https://bots.tf/) database (`bot`)
 - megascatterbomb's Mega Cheater Database (`mcdb`)
-- Groups of your own choice (`groups`) (More details below.)
+- Groups of your own choice (`steam`) (More details below.)
 - Sleepy List RGL bans (`sleepy-rgl`)
 - Sleepy List bot list (`sleepy-bot`)
 - Your own ID list (`custom`) (HEAVILY WIP, details below)
@@ -70,21 +70,21 @@ COWHOOKLOVERS
 - [Surepy/sleepy](https://github.com/surepy) - for the [base](https://github.com/surepy/tf2db-sleepy-list/blob/main/export_megacheaterdb_as_tf2bd.py) for the [MCDB parser](https://github.com/PiantaMK/BotListConverter/blob/main/src/parser/megadb.py)
 
 # Custom ID lists
-Create a python file in the `lists` directory.
+Create a python file in the `src/lists` directory.  
 Requires:
-- A value named `__ATTR__`.
-- `__ATTR__['name']` is your own name of the list.
-- A function named `__call__` that returns a dict or list of SteamIDs.
+- A value named `_name`. (your own name of the list.)  
+- A function named `_main` that returns a dict or list of SteamIDs.
+- You might want to import the `SteamID` class from `src.utils.format` to make it easier to work with SteamIDs.
 <details>
   <summary>Very simple example</summary>
 
   ```python
-  __ATTR__ = {
-    'name': 'My own list'
-  }
+  _name = 'My own list'
 
-  def __call__():
-    return ['STEAM_0:0:12345678', 'STEAM_0:0:87654321']
+  def _main():
+    id1 = SteamID('STEAM_0:0:12345678').id64
+    id2 = SteamID('STEAM_0:0:87654321').id64
+    return [id1, id2]
   ```
   A more detailed example can be found in `lists/example.py`.
 </details>
@@ -94,7 +94,7 @@ Requires:
 
 - They generate a JSON list of SteamIDs that can be used in the converter.
 
-- **WARNING: I am not responsible for IP blocks from the website admins.**
+- **WARNING: I am not responsible for IP blocks from website admins.**
 
 - Supported websites:
 
@@ -102,4 +102,4 @@ Requires:
     - SourceBans++
     - [Rent-a-Medic](https://rentamedic.org/)
 
-(`lists/example.py` is an example of converting this format into a list of IDs.)
+(`src/lists/_example.py` is an example of converting this format into a list of IDs.)

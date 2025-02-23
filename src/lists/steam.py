@@ -103,3 +103,7 @@ def get():
     group_members_dict = getgroups(fig['group_file'])
     
     return group_members_dict
+
+_pretty = "Steam Groups"
+def _main():
+    return get()

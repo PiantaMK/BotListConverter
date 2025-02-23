@@ -2,7 +2,11 @@ import chompjs
 import requests
 import time
 
-from .parser import get_latest_archived_url
+def get_latest_archived_url(url):
+    data = requests.get(f"http://archive.org/wayback/available?url={url}").json()
+    if data['archived_snapshots']:
+        return data['archived_snapshots']['closest']['url']
+    return None
 
 def fetch_mcdb(url="https://megascatterbomb.com/mcd"):
     cheaters = []
@@ -25,7 +29,7 @@ def fetch_mcdb(url="https://megascatterbomb.com/mcd"):
             print(f"Unknown color encountered: {data['color']['border']}")
             exit()
 
-    def getsite(url):
+    def parse_site(url):
         run_time = time.time()
         site_data_str = requests.get(url).text
 
@@ -58,10 +62,10 @@ def fetch_mcdb(url="https://megascatterbomb.com/mcd"):
         print("------------------------\n")
         return True
 
-    if not getsite(url):
+    if not parse_site(url):
         print("Retrying with fallback URL...")
         fallback = get_latest_archived_url(url)
-        if not fallback or not getsite(fallback):
+        if not fallback or not parse_site(fallback):
             print("Failed to parse MCDB.")
             return {}
 
@@ -71,3 +75,7 @@ def fetch_mcdb(url="https://megascatterbomb.com/mcd"):
         "MCDB - Watched": watched,
         "MCDB - Legit": legit
     }
+
+_pretty = "megascatterbomb.com"
+def _main():
+    return fetch_mcdb()

@@ -1,5 +1,6 @@
 {
     "settings": {
-        "GROUP_FILE": "groups_example.txt"
+        "GROUP_FILE": "groups_example.txt",
+        "LAST_LAUNCH": 1740325827.3343368
     }
 }
