@@ -1,5 +1,5 @@
 # note: the main script chdirs to the root directory
-from src.utils.format import remove_duplicates
+from utils.format import remove_duplicates
 import json
 
 _name = 'Example custom ID list', # display/category name

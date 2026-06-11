@@ -1,4 +1,4 @@
-from src.utils.format import SteamID
+from utils.format import SteamID
 
 import json
 

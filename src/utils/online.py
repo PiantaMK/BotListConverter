@@ -1,7 +1,7 @@
 import json
 import requests
 
-from src.utils.format import SteamID
+from utils.format import SteamID
 
 def get_latest_archived_url(url):
     data = requests.get(f"http://archive.org/wayback/available?url={url}").json()

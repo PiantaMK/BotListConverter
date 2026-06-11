@@ -1,4 +1,4 @@
-from src.utils.format import SteamID
+from utils.format import SteamID
 from datetime import datetime
 
 def adjust_priority(priority):

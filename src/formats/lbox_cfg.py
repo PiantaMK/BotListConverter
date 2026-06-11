@@ -1,4 +1,4 @@
-from src.utils.format import SteamID
+from utils.format import SteamID
 
 def format_lboxcfg(list: list, priority: int) -> str:
     if priority in [0, 1]:

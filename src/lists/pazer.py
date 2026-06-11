@@ -1,4 +1,4 @@
-from src.utils.online import *
+from utils.online import *
 
 GET = "https://raw.githubusercontent.com/d3fc0n6/TacobotList/master/64ids"
 

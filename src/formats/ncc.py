@@ -1,4 +1,4 @@
-from src.utils.format import SteamID
+from utils.format import SteamID
 
 def format_ncc(list: list) -> list:
     return [f"{SteamID(i).id64} - {SteamID(i).id64}" for i in list]

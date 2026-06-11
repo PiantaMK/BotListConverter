@@ -1,4 +1,4 @@
-from src.utils.format import SteamID
+from utils.format import SteamID
 
 def format_cathook(list: list) -> list:
     return [f"cat_pl_add_id {SteamID(i).id3} RAGE" for i in list]

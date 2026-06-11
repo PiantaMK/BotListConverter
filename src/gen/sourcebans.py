@@ -6,7 +6,7 @@ import html
 import signal
 import time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src.utils.format import SteamID
+from utils.format import SteamID
 
 #? sourcebans/++ banlist scraper
 #? supports both old and new sourcebans++ styles

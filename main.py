@@ -7,7 +7,7 @@ ARGS_DEBUG = 0
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 # os.chdir(os.path.join(os.path.dirname(__file__), 'src'))
 
-from src.main import LISTS, FORMATS, main
+from main import LISTS, FORMATS, main
 
 argparse_example = \
 """

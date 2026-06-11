@@ -1,4 +1,4 @@
-from src.utils.online import *
+from utils.online import *
 
 GET = "http://api.bots.tf/rawtext"
 
