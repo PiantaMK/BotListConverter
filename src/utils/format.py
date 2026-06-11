@@ -24,73 +24,89 @@ def merge_dicts(dicts):
                 merged[key] = value
     return merged
 
-def detect_id_type(id: str|int) -> str|None:
-    if isinstance(id, int) or id.isdigit():
-        if int(id) >= ID64_MAGIC_NUMBER:
-            return "STEAMID64"
-        else:
-            return "STEAMID3-N"
-    elif isinstance(id, str):
-        if id.startswith("STEAM_0"):
-            return "STEAMID2"
-        elif id.startswith("[U:1:"):
-            return "STEAMID3-B"
-        else:
-            return None
-    else:
-        return None
-
-def cvt(id: str|int, tgt: str) -> str|int:
-    idtype = detect_id_type(id)
-
-    # no conversion needed
-    if idtype == tgt:
-        if idtype in ["STEAMID3-N", "STEAMID64"]:
-            return int(id)
-        return id
-    
-    id64 = None
-
-    # convert to id64 (easier to convert)
-    if idtype == "STEAMID2":
-        m = re.search(r"STEAM_0:(\d):(\d+)", id)
-        y = int(m.group(1))
-        accnum = int(m.group(2))
-        id64 = ID64_MAGIC_NUMBER + (2 * accnum) + y
-    elif idtype == "STEAMID3-N":
-        id64 = ID64_MAGIC_NUMBER + int(id)
-    elif idtype == "STEAMID3-B":
-        m = re.search(r"\[U:1:(\d+)\]", id)
-        id64 = ID64_MAGIC_NUMBER + int(m.group(1))
-    elif idtype == "STEAMID64":
-        id64 = int(id)
-    else:
-        raise ValueError(f"Unknown ID type: {id}")
-
-    id64 = int(id64)
-
-    # convert to target format
-    if tgt == "STEAMID2":
-        account_id = id64 - ID64_MAGIC_NUMBER
-        y = account_id % 2
-        z = (account_id - y) // 2
-        return f"STEAM_0:{y}:{z}"
-    elif tgt == "STEAMID3-N":
-        return id64 - ID64_MAGIC_NUMBER
-    elif tgt == "STEAMID3-B":
-        return f"[U:1:{id64 - ID64_MAGIC_NUMBER}]"
-    elif tgt == "STEAMID64":
-        return id64
-    else:
-        return None
-
 class SteamID:
-    def __init__(self, id):
-        self._id = cvt(id, detect_id_type(id)) # so we can turn some formats into int
-        self.id64 = cvt(id, "STEAMID64") # 76561197960389180
-        self.id3 = cvt(id, "STEAMID3-N")  # 123456
-        self.id3b = cvt(id, "STEAMID3-N") # [U:1:123456]
-        self.id2 = cvt(id, "STEAMID2")  # STEAM_0:0:123456
+    ID64_BASE = 76561197960265728
+
+    def __init__(self, value):
+        self._account_id = None
+        self._parse(value)
+
+    def _parse(self, value):
+        if value is None:
+            raise ValueError("SteamID value cannot be None")
+        
+        val_str = str(value).strip()
+        if not val_str:
+            raise ValueError("SteamID value cannot be empty")
+
+        if val_str.isdigit():
+            val_int = int(val_str)
+            if val_int >= self.ID64_BASE:
+                self._account_id = val_int - self.ID64_BASE
+            else:
+                self._account_id = val_int
+            return
+
+        # Try Steam2: STEAM_X:Y:Z
+        steam2_match = re.match(r"^STEAM_[0-5]:([0-1]):(\d+)$", val_str, re.IGNORECASE)
+        if steam2_match:
+            y = int(steam2_match.group(1))
+            z = int(steam2_match.group(2))
+            self._account_id = z * 2 + y
+            return
+
+        # Try Steam3 Bracket: [U:1:Y]
+        steam3_match = re.match(r"^\[U:1:(\d+)\]$", val_str, re.IGNORECASE)
+        if steam3_match:
+            self._account_id = int(steam3_match.group(1))
+            return
+
+        # Try Steam3 No Bracket: U:1:Y
+        steam3_nobrackets = re.match(r"^U:1:(\d+)$", val_str, re.IGNORECASE)
+        if steam3_nobrackets:
+            self._account_id = int(steam3_nobrackets.group(1))
+            return
+
+        raise ValueError(f"Invalid SteamID format: {value}")
+
+    @property
+    def id3(self):
+        """Account ID / Steam3 number (e.g. 123456)"""
+        return self._account_id
+
+    @property
+    def id3b(self):
+        """Steam3 Bracket format (e.g. [U:1:123456])"""
+        return f"[U:1:{self._account_id}]"
+
+    @property
+    def id64(self):
+        """Steam64 / Community ID (e.g. 76561197960265728 + account_id)"""
+        return self.ID64_BASE + self._account_id
+
+    @property
+    def id2(self):
+        """Steam2 format (e.g. STEAM_0:X:Y)"""
+        y = self._account_id % 2
+        z = self._account_id // 2
+        return f"STEAM_0:{y}:{z}"
+
+    def __eq__(self, other):
+        if isinstance(other, SteamID):
+            return self._account_id == other._account_id
+        try:
+            return self._account_id == SteamID(other)._account_id
+        except ValueError:
+            return False
+
+    def __hash__(self):
+        return hash(self._account_id)
+
+    def __repr__(self):
+        return f"SteamID({self.id64})"
+
+    def __str__(self):
+        return str(self.id64)
 
 def remove_duplicates(input_data):
     if isinstance(input_data, dict):
